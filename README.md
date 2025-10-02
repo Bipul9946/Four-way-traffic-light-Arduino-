@@ -3,7 +3,7 @@ An Arduino-based four- way traffic light control system using LEDs, resistors, a
 # 🚦 Four Way Traffic Light Control System  
 ![Arduino](https://img.shields.io/badge/Arduino-Uno-blue) ![License](https://img.shields.io/badge/License-MIT-green)  
 
-## 📌 Overview  
+##  Overview  
 This project demonstrates a *four-way traffic light control system* using an *Arduino Uno*.  
 It manages traffic at a four-way intersection by controlling *Red, Yellow, and Green lights* in a sequence.  
 The logic ensures *safe and smooth traffic flow* by cycling through all four directions with proper timing intervals.  
@@ -38,15 +38,85 @@ Each direction has 3 LEDs (Red, Yellow, Green) connected to Arduino pins.
 - *Yellow light*: 2 seconds  
 - *Red buffer*: 1 second  
 
-These values can be modified in the code:  
-```cpp
-int greenTime = 5000;   // 5 sec Green
-int yellowTime = 2000;  // 2 sec Yellow
-int redTime = 1000;     // 1 sec Red buffer
 
 
-four-way-traffic-light-arduino/
-│── traffic_light.ino        # Arduino source code
-│── README.md                # Documentation
-│── /docs                    # Circuit diagram (optional)
-│── LICENSE                  # Open-source license
+*/
+
+// === Pin Definitions ===
+#define RED1     2
+#define YELLOW1  3
+#define GREEN1   4
+
+#define RED2     5
+#define YELLOW2  6
+#define GREEN2   7
+
+#define RED3     8
+#define YELLOW3  9
+#define GREEN3   10
+
+#define RED4     11
+#define YELLOW4  12
+#define GREEN4   13
+
+// === Timing Configuration (milliseconds) ===
+int greenTime  = 5000;   // 5 seconds Green
+int yellowTime = 2000;   // 2 seconds Yellow
+int redTime    = 1000;   // 1 second buffer
+
+// === Setup ===
+void setup() {
+  // Set all pins as OUTPUT
+  pinMode(RED1, OUTPUT); pinMode(YELLOW1, OUTPUT); pinMode(GREEN1, OUTPUT);
+  pinMode(RED2, OUTPUT); pinMode(YELLOW2, OUTPUT); pinMode(GREEN2, OUTPUT);
+  pinMode(RED3, OUTPUT); pinMode(YELLOW3, OUTPUT); pinMode(GREEN3, OUTPUT);
+  pinMode(RED4, OUTPUT); pinMode(YELLOW4, OUTPUT); pinMode(GREEN4, OUTPUT);
+
+  // Turn all signals RED at start
+  allRed();
+}
+
+// === Loop (Main Program) ===
+void loop() {
+  // Sequence: 1 → 2 → 3 → 4
+  trafficCycle(RED1, YELLOW1, GREEN1);
+  trafficCycle(RED2, YELLOW2, GREEN2);
+  trafficCycle(RED3, YELLOW3, GREEN3);
+  trafficCycle(RED4, YELLOW4, GREEN4);
+}
+
+// === Function: Run one direction cycle ===
+void trafficCycle(int red, int yellow, int green) {
+  // Green ON
+  digitalWrite(green, HIGH);
+  digitalWrite(red, LOW);
+  delay(greenTime);
+
+  // Yellow ON
+  digitalWrite(green, LOW);
+  digitalWrite(yellow, HIGH);
+  delay(yellowTime);
+
+  // Back to Red
+  digitalWrite(yellow, LOW);
+  digitalWrite(red, HIGH);
+  delay(redTime);
+}
+
+// === Helper: Turn all signals RED ===
+void allRed() {
+  digitalWrite(RED1, HIGH);
+  digitalWrite(RED2, HIGH);
+  digitalWrite(RED3, HIGH);
+  digitalWrite(RED4, HIGH);
+
+  digitalWrite(YELLOW1, LOW);
+  digitalWrite(YELLOW2, LOW);
+  digitalWrite(YELLOW3, LOW);
+  digitalWrite(YELLOW4, LOW);
+
+  digitalWrite(GREEN1, LOW);
+  digitalWrite(GREEN2, LOW);
+  digitalWrite(GREEN3, LOW);
+  digitalWrite(GREEN4, LOW);
+}
